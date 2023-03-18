@@ -5,10 +5,16 @@ const app = express()
 const server = http.createServer(app)
 const io = new Server(server, {cors: { origin: "*"}})
 const session = require("express-session")
-
+const helmet = require("helmet")
+const compression = require("compression")
+require("dotenv").config()
+const cors = require("cors")
+app.use(compression())
+app.use(helmet())
+app.use(cors({allowedHeaders: '*'}))
 const sessionMiddleware  = session({
   secret: 'uiuiuiiuiu',
-  saveUninitialized: false,
+  saveUninitialized: true,
   resave: false,
 })
 
@@ -22,7 +28,6 @@ app.use(sessionMiddleware)
 // - bot-message
 // - user-message
 
-const orderHistory = {}
 let id = 1
 
 
@@ -30,8 +35,6 @@ io.use((socket, next) => {
   sessionMiddleware(socket.request, socket.request.res, next)
 })
 io.on("connection", socket => {
-
-console.log(socket.request.session)
 
   const botMessage = (data, ...rest) => socket.emit('bot-message', data, ...rest)
 
