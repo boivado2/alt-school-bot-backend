@@ -12,8 +12,9 @@ const cors = require("cors")
 app.use(compression())
 app.use(helmet())
 app.use(cors({allowedHeaders: '*'}))
+
 const sessionMiddleware  = session({
-  secret: 'uiuiuiiuiu',
+  secret: process.env.SESSION_SECRETE_KEY,
   saveUninitialized: true,
   resave: false,
 })
